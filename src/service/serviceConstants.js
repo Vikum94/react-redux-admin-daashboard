@@ -1,2 +1,2 @@
-export const SERVICE_ROOT = 'https://blooming-reef-54284.herokuapp.com/api/';
+export const SERVICE_ROOT = 'https://sithumina-synergy-prod.herokuapp.com/api/';
 

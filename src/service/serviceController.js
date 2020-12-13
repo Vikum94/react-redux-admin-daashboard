@@ -17,11 +17,11 @@ export const loginResponseController = (text) => {
             }
         }
         let data = JSON.parse(res);
-        if(data.user.userType !== 'admin'){
-            return Promise.reject("Access Denied.");
-        }else{
+        // if(data.user.userType !== 'admin'){
+        //     return Promise.reject("Access Denied.");
+        // }else{
             return Promise.resolve(data);
-        }
+        // }
     });
 };
 
