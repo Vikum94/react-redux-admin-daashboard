@@ -23,8 +23,8 @@ const categories = [
     {
         id: 'Overview',
         children: [
-            { id: 'Chapters', icon: <DnsRoundedIcon />, active: false },
             { id: 'Users', icon: <PeopleIcon/>, active: false},
+            { id: 'Chapters', icon: <DnsRoundedIcon />, active: false },
             { id: 'Income', icon: <PermMediaOutlinedIcon />, active: false}
         ],
     },

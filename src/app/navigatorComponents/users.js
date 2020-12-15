@@ -1,17 +1,16 @@
 import React from 'react';
 import {connect} from "react-redux";
-import List from "@material-ui/core/List";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import ListItem from "@material-ui/core/ListItem";
-import PersonIcon from '@material-ui/icons/Person';
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
+import MaterialTable from "material-table";
+import Search from '@material-ui/icons/Search';
+import Clear from '@material-ui/icons/Clear';
+import ChevronLeft from '@material-ui/icons/ChevronLeft'
+import ChevronRight from '@material-ui/icons/ChevronRight'
+import FirstPage from '@material-ui/icons/FirstPage'
+import LastPage from '@material-ui/icons/LastPage'
 import * as PropTypes from "prop-types";
 import {styles} from './../../css/userStyles';
 import withStyles from "@material-ui/core/styles/withStyles";
 import {fetchUsers, updateCredits} from './../../store/actions/actionCreators'
-import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -68,42 +67,42 @@ class Users extends React.Component {
     };
 
     render() {
-        const {classes, users, loading, loadingChapterUpdate} = this.props;
+        const {users, loading, loadingChapterUpdate} = this.props;
         return (
             <React.Fragment>
-                <List subheader={<ListSubheader>User Credits</ListSubheader>} className={classes.root}>
-                    {users.map((user) => {
-                        return (
-                            <ListItem key={user.id}>
-                                <ListItemIcon>
-                                    <PersonIcon/>
-                                </ListItemIcon>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={3}>
-                                        <ListItemText>{user.name}</ListItemText>
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                        <ListItemText>{user.email}</ListItemText>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <ListItemText>Rs. {user.creditBalance}</ListItemText>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <ListItemText>Rs. {user.pendingCredits}</ListItemText>
-                                    </Grid>
+                <MaterialTable
+                    title="Students Details"
+                    icons={{
+                        FirstPage: FirstPage,
+                        LastPage: LastPage,
+                        NextPage: ChevronRight,
+                        PreviousPage: ChevronLeft,
+                        Search: Search,
+                        ResetSearch: Clear
+                    }}
+                    columns={[
+                        {title: 'Name', field: 'name'},
+                        {title: 'Email', field: 'email'},
+                        {title: 'Credit Balance', field: 'creditBalance'},
+                        {
+                            title: 'Edit Balance', field: 'id', render: rowData =>
+                                <Button variant="outlined" color="primary" onClick={() => {
+                                    this.onUpdateCreditDialogOpen(rowData)
+                                }}>
+                                    Update Credits
+                                </Button>
+                        }
+                    ]}
+                    data={users}
+                    options={{
+                        headerStyle: {
+                            fontWeight: 'bold'
+                        }
+                    }}
 
-                                </Grid>
-                                <ListItemSecondaryAction>
-                                    <Button variant="outlined" color="primary" onClick={() => {
-                                        this.onUpdateCreditDialogOpen(user)
-                                    }}>
-                                        Update Credits
-                                    </Button>
-                                </ListItemSecondaryAction>
-                            </ListItem>
-                        )
-                    })}
-                </List>
+                >
+
+                </MaterialTable>
 
                 <div>
                     <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">

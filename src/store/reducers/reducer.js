@@ -1,5 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
-import {CHAPTERS} from './../../app/uiConstants';
+import {USERS} from './../../app/uiConstants';
 import _ from 'lodash';
 
 if(sessionStorage.getItem('logged') == null){
@@ -9,7 +9,7 @@ if(sessionStorage.getItem('logged') == null){
 const initialState = {
     isValidUser: false,
     loginErrorDetail: {display: 'none', msg: ""},
-    currentTab: CHAPTERS,
+    currentTab: USERS,
     chapters: [],
     users: [],
     loadingLogin: false,
