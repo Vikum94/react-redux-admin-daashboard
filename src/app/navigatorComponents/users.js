@@ -81,6 +81,7 @@ class Users extends React.Component {
                         ResetSearch: Clear
                     }}
                     columns={[
+                        {title: 'ID', field: 'userID'},
                         {title: 'Name', field: 'name'},
                         {title: 'Email', field: 'email'},
                         {title: 'Credit Balance', field: 'creditBalance'},

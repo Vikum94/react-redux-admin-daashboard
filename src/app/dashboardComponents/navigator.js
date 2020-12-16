@@ -52,7 +52,7 @@ class Navigator extends React.Component {
                 <List disablePadding>
 
                     <ListItem className={clsx(classes.firebase, classes.item, classes.itemCategory)}>
-                        Power Academy
+                        සිතුමිණ Synergy Education
                     </ListItem>
 
                     {categories.map(({id, children}) => (

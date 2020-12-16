@@ -48,7 +48,7 @@ class HomePage extends React.Component {
                             <Typography variant="body2" color="textSecondary" align="center">
                                 {'Copyright © '}
                                 <Link color="inherit" href="https://material-ui.com/">
-                                    Power Academy
+                                    සිතුමිණ Synergy Education
                                 </Link>{' '}
                                 {new Date().getFullYear()}
                                 {'.'}

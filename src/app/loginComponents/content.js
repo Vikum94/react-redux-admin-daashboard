@@ -1,9 +1,6 @@
 import React from 'react';
 import LoginPage from './loginPage';
-import useStyles from '../../css/loginStyle'
 import {connect} from "react-redux";
-import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/styles';
 
 import {login} from '../../store/actions/actionCreators'
 import HomePage from "../dashboardComponents/content";
@@ -20,11 +17,6 @@ class Content extends React.Component {
     }
 }
 
-Content.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
-
-const styles = useStyles();
 
 const mapStateToProps = (appState) => {
     return {
@@ -36,4 +28,4 @@ const mapDispatchToProps = {
     login: login
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Content));
+export default connect(mapStateToProps, mapDispatchToProps)(Content);
