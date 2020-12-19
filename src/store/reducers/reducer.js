@@ -1,6 +1,7 @@
 import * as actionTypes from '../actions/actionTypes';
 import {USERS} from './../../app/uiConstants';
 import _ from 'lodash';
+import {UPDATE_CHAPTER_BEGIN, UPDATE_CHAPTER_SUCCESS, UPDATE_CHAPTER_FAILURE, REMOVE_CHAPTER_BEGIN, REMOVE_CHAPTER_FAILURE, REMOVE_CHAPTER_SUCCESS} from "../actions/actionTypes";
 
 if(sessionStorage.getItem('logged') == null){
     sessionStorage.setItem('logged', 'F');
@@ -15,11 +16,16 @@ const initialState = {
     loadingLogin: false,
     loadingUsers: false,
     loadingChapters: false,
-    loadingChapterUpdate: false
+    loadingCreditUpdate: false,
+    loadingChapterUpdate: false,
+    chapterUpdateResponse: {msgHeader: '', msgBody: ''},
+    loadingChapterRemove: false,
+    chapterRemoveResponse: {msgHeader: 'Are you sure you want to delete this chapter?'},
 };
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
+        //---- login process ------------
         case actionTypes.LOGIN_BEGIN:
             return{
                 ...state,
@@ -39,7 +45,7 @@ const reducer = (state = initialState, action) => {
                 loginErrorDetail: {display: "inline", msg: action.payload}
             };
 
-
+        //---- Tab Swap Process ------------
         case actionTypes.CHANGE_TAB:
             return{
                 ...state,
@@ -47,6 +53,7 @@ const reducer = (state = initialState, action) => {
             };
 
 
+        //---- Fetch Chapters ------------
         case actionTypes.CHAPTERS_FETCH_BEGIN:
             return{
                 ...state,
@@ -65,6 +72,7 @@ const reducer = (state = initialState, action) => {
             };
 
 
+        //---- Fetch Users------------
         case actionTypes.USERS_FETCH_BEGIN:
             return{
                 ...state,
@@ -83,10 +91,11 @@ const reducer = (state = initialState, action) => {
             };
 
 
+        //--- Update credit ------------
         case actionTypes.UPDATE_CREDIT_BEGIN:
             return{
                 ...state,
-                loadingChapterUpdate: true
+                loadingCreditUpdate: true
             };
         case actionTypes.UPDATE_CREDIT_SUCCESS:
             let users = _.clone(state.users);
@@ -99,12 +108,51 @@ const reducer = (state = initialState, action) => {
             return{
                 ...state,
                 users: users,
-                loadingChapterUpdate: false
+                loadingCreditUpdate: false
             };
         case actionTypes.UPDATE_CREDIT_FAILURE:
             return{
                 ...state,
-                loadingChapterUpdate: false
+                loadingCreditUpdate: false
+            };
+
+
+        //----- update chapter -------------
+        case UPDATE_CHAPTER_BEGIN:
+            return{
+                ...state,
+                loadingChapterUpdate: true
+            };
+        case UPDATE_CHAPTER_SUCCESS:
+            return{
+                ...state,
+                loadingChapterUpdate: false,
+                chapterUpdateResponse: action.payload
+            };
+        case UPDATE_CHAPTER_FAILURE:
+            return{
+                ...state,
+                loadingChapterUpdate: false,
+                chapterUpdateResponse: action.payload
+            };
+
+        //----- remove chapter -------------
+        case REMOVE_CHAPTER_BEGIN:
+            return{
+                ...state,
+                loadingChapterRemove: true
+            };
+        case REMOVE_CHAPTER_SUCCESS:
+            return{
+                ...state,
+                loadingChapterRemove: false,
+                chapterRemoveResponse: action.payload
+            };
+        case REMOVE_CHAPTER_FAILURE:
+            return{
+                ...state,
+                loadingChapterRemove: false,
+                chapterRemoveResponse: action.payload
             };
 
         default:

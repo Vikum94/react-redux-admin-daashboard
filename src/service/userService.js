@@ -1,5 +1,11 @@
 import {SERVICE_ROOT} from './serviceConstants';
-import {loginResponseController, getChapterComposer, getUserComposer, updateCreditComposer} from './serviceController'
+import {
+    loginResponseController,
+    getChapterComposer,
+    getUserComposer,
+    updateCreditComposer,
+    updateChapterComposer, removeChapterComposer
+} from './serviceController';
 
 let loginService = (email, password) => {
     const URL = SERVICE_ROOT + "users/login";
@@ -36,7 +42,7 @@ let getUsers = () => {
     const URL = SERVICE_ROOT + "users";
     const requestOptions = {
         method: 'GET',
-        headers: {'Authorization' : sessionStorage.getItem('token')}
+        headers: {'Authorization': sessionStorage.getItem('token')}
     };
 
     return fetch(URL, requestOptions)
@@ -50,7 +56,7 @@ let updateCredits = (user, amount) => {
     const URL = SERVICE_ROOT + "users/update_credits";
     const requestOptions = {
         method: 'PATCH',
-        headers: {'Authorization' : sessionStorage.getItem('token'), 'Content-Type': 'application/json'},
+        headers: {'Authorization': sessionStorage.getItem('token'), 'Content-Type': 'application/json'},
         body: JSON.stringify({
             userID: user.userID,
             credits: amount
@@ -65,9 +71,51 @@ let updateCredits = (user, amount) => {
         })
 };
 
+let updateChapter = (chapter) => {
+    const URL = SERVICE_ROOT + "chapters/update";
+    const requestOptions = {
+        method: 'PATCH',
+        headers: {'Authorization': sessionStorage.getItem('token'), 'Content-Type': 'application/json'},
+        body: JSON.stringify(chapter)
+    };
+
+    return fetch(URL, requestOptions)
+        .then(updateChapterComposer)
+        .then(data =>  data);
+};
+
+let createChapter = (chapter) => {
+    const URL = SERVICE_ROOT + "chapters/create";
+    const requestOptions = {
+        method: 'POST',
+        headers: {'Authorization': sessionStorage.getItem('token'), 'Content-Type': 'application/json'},
+        body: JSON.stringify(chapter)
+    };
+
+    return fetch(URL, requestOptions)
+        .then(updateChapterComposer)
+        .then(data =>  data);
+};
+
+let removeChapter = (chapter) => {
+    const URL = SERVICE_ROOT + "chapters/delete/" + chapter._id;
+    const requestOptions = {
+        method: 'DELETE',
+        headers: {'Authorization': sessionStorage.getItem('token'), 'Content-Type': 'application/json'}
+    };
+
+    return fetch(URL, requestOptions)
+        .then(removeChapterComposer)
+        .then(data =>  data);
+};
+
+
 export const userService = {
     loginService,
     getChapters,
     getUsers,
-    updateCredits
+    updateCredits,
+    updateChapter,
+    createChapter,
+    removeChapter
 };

@@ -1,23 +1,44 @@
 import React from 'react';
-import {connect} from "react-redux";
-import PropTypes from 'prop-types';
+import {useSelector} from "react-redux";
+import clsx from 'clsx';
+import {
+    CssBaseline,
+    Drawer,
+    AppBar,
+    Toolbar,
+    List,
+    Typography,
+    Divider,
+    IconButton,
+    Container,
+    Grid,
+    } from '@material-ui/core';
+import {Menu, ChevronLeft} from '@material-ui/icons';
 
-import {ThemeProvider, withStyles} from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from "@material-ui/core/Typography";
-import Link from "@material-ui/core/Link";
-
-import {theme, styles, drawerWidth} from '../../css/homeStyle';
-import Header from './header';
-import Navigator from './navigator';
-import {CHAPTERS, USERS} from '../uiConstants'
+import NavigatorList from './navigator';
 import Users from "../navigatorComponents/users";
 import Chapters from "../navigatorComponents/chapters";
+import {CHAPTERS, USERS} from "../uiConstants";
+import {theme, useStyles} from '../../css/homeStyle'
+import { MuiThemeProvider } from '@material-ui/core/styles';
 
-class HomePage extends React.Component {
 
-    renderSwitchNavigatorOption = (type) => {
-        switch(type) {
+export default function Dashboard() {
+    const classes = useStyles(theme);
+
+    const [open, setOpen] = React.useState(true);
+    const currentTab = useSelector(state => state.currentTab);
+
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+        setOpen(false);
+    };
+
+    const renderSwitchNavigatorOption = (type) => {
+        switch (type) {
             case CHAPTERS:
                 return <Chapters/>;
             case USERS:
@@ -27,51 +48,58 @@ class HomePage extends React.Component {
         }
     };
 
-    render() {
-        const {classes, currentTab} = this.props;
-        return (
-            <ThemeProvider theme={theme}>
-                <div className={classes.root}>
-                    <CssBaseline/>
-                    <nav className={classes.drawer}>
-                        <Navigator PaperProps={{style: {width: drawerWidth}}}/>
-                    </nav>
-                    <div className={classes.app}>
-                        <Header/>
-
-                        <main className={classes.main}>
-                            {this.renderSwitchNavigatorOption(currentTab)}
-                        </main>
-
-
-                        <footer className={classes.footer}>
-                            <Typography variant="body2" color="textSecondary" align="center">
-                                {'Copyright © '}
-                                <Link color="inherit" href="https://material-ui.com/">
-                                    සිතුමිණ Synergy Education
-                                </Link>{' '}
-                                {new Date().getFullYear()}
-                                {'.'}
-                            </Typography>
-                        </footer>
-
+    return (
+        <MuiThemeProvider  theme={theme} >
+            <div className={classes.root}>
+                <CssBaseline/>
+                <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+                    <Toolbar className={classes.toolbar}>
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={handleDrawerOpen}
+                            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+                        >
+                            <Menu/>
+                        </IconButton>
+                        <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+                            සිතුමිණ Synergy Education
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+                <Drawer
+                    variant="permanent"
+                    classes={{
+                        paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+                    }}
+                    open={open}
+                >
+                    <div className={classes.toolbarIcon}>
+                        <IconButton onClick={handleDrawerClose}>
+                            <ChevronLeft/>
+                        </IconButton>
                     </div>
-                </div>
-            </ThemeProvider>
-        )
-    }
-}
+                    <Divider/>
+                    <List>
+                        <NavigatorList/>
+                    </List>
+                </Drawer>
 
-const mapStateToProps = (appState) => {
-    return {
-        isValidUser: appState.isValidUser,
-        currentTab: appState.currentTab
-    }
+                <main className={classes.content}>
+                    <div className={classes.appBarSpacer}/>
+                    <Container maxWidth="lg" className={classes.container}>
+                        <Grid container spacing={3}>
+                            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+                                {currentTab}
+                            </Typography>
+                            <Grid item xs={12}>
+                                {renderSwitchNavigatorOption(currentTab)}
+                            </Grid>
+                        </Grid>
+                    </Container>
+                </main>
+            </div>
+        </MuiThemeProvider >
+    );
 };
-
-const mapDispatchToProps = {};
-
-HomePage.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(HomePage));

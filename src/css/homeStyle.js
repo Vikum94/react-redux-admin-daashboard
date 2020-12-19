@@ -1,11 +1,13 @@
+import makeStyles from "@material-ui/core/styles/makeStyles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 export let theme = createMuiTheme({
     palette: {
+        type: 'dark',
         primary: {
-            light: '#f6685e',
-            main: '#aa2e25',
-            dark: '#aa2e25',
+            light: '#b23c17',
+            main: '#ff5722',
+            dark: '#ff784e',
         },
     },
     typography: {
@@ -110,30 +112,83 @@ theme = {
     },
 };
 
-export const drawerWidth = 256;
-export const styles = {
+const drawerWidth = 240;
+
+export const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
-        minHeight: '100vh',
     },
-    drawer: {
+    toolbar: {
+        paddingRight: 24, // keep right padding when drawer closed
+    },
+    toolbarIcon: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        padding: '0 8px',
+        ...theme.mixins.toolbar,
+    },
+    appBar: {
+        zIndex: theme.zIndex.drawer + 1,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+    },
+    appBarShift: {
+        marginLeft: drawerWidth,
+        width: `calc(100% - ${drawerWidth}px)`,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
+    menuButton: {
+        marginRight: 36,
+    },
+    menuButtonHidden: {
+        display: 'none',
+    },
+    title: {
+        flexGrow: 1,
+    },
+    drawerPaper: {
+        position: 'relative',
+        whiteSpace: 'nowrap',
+        width: drawerWidth,
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
+    drawerPaperClose: {
+        overflowX: 'hidden',
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        width: theme.spacing(7),
         [theme.breakpoints.up('sm')]: {
-            width: drawerWidth,
-            flexShrink: 0,
+            width: theme.spacing(9),
         },
     },
-    app: {
-        flex: 1,
+    appBarSpacer: theme.mixins.toolbar,
+    content: {
+        flexGrow: 1,
+        height: '100vh',
+        overflow: 'auto',
+    },
+    container: {
+        paddingTop: theme.spacing(4),
+        paddingBottom: theme.spacing(4),
+    },
+    paper: {
+        padding: theme.spacing(2),
         display: 'flex',
+        overflow: 'auto',
         flexDirection: 'column',
     },
-    main: {
-        flex: 1,
-        padding: theme.spacing(6, 4),
-        background: '#eaeff1',
+    fixedHeight: {
+        height: 240,
     },
-    footer: {
-        padding: theme.spacing(2),
-        background: '#eaeff1',
-    },
-};
+}));

@@ -1,31 +1,45 @@
 import React from 'react';
 import {connect} from "react-redux";
 import * as PropTypes from "prop-types";
-import {styles} from '../../css/chapterStyle';
-
-import withStyles from "@material-ui/core/styles/withStyles";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import CardMedia from "@material-ui/core/CardMedia";
-import CardActions from "@material-ui/core/CardActions";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import TextField from "@material-ui/core/TextField";
-import AppBar from "@material-ui/core/AppBar";
-import IconButton from "@material-ui/core/IconButton";
+import {
+    withStyles,
+    Card,
+    CardActionArea,
+    CardContent,
+    Typography,
+    Button,
+    CardActions,
+    Dialog,
+    DialogContent,
+    AppBar,
+    IconButton,
+    Toolbar,
+    Grid, TextField, DialogTitle, DialogActions, CircularProgress, Backdrop
+} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
-import Toolbar from "@material-ui/core/Toolbar";
+
+import {styles} from '../../css/chapterStyle';
+import ChapterEditDialog from "./chapterEditDialog";
+import {fetchChapters, removeChapter} from "../../store/actions/actionCreators";
+
 
 class Chapter extends React.Component {
 
     constructor(props) {
         super(props);
+        const {chapter} = this.props;
         this.state = {
-            editDialogOpen: false
+            editDialogOpen: false,
+            removeDialogOpen: false,
+            chapter: {
+                _id: chapter._id,
+                chapterNumber: chapter.chapterNumber,
+                chapterName: chapter.chapterName,
+                chapterCost: chapter.chapterCost,
+                chapterDescription: chapter.chapterDescription,
+                lessons: chapter.lessons
+            },
+            onSubmit: false
         }
     };
 
@@ -35,15 +49,32 @@ class Chapter extends React.Component {
             editDialogOpen: true
         })
     };
+    onRemove = () => {
+        this.setState({
+            removeDialogOpen: true
+        })
+    };
 
     handleEditDialogClose = () => {
+        this.props.fetchChapters();
         this.setState({
             editDialogOpen: false
         });
         return false;
     };
 
+    handleRemoveDialogClose = () => {
+        if(this.state.onSubmit){
+            this.props.fetchChapters()
+        }
+        this.setState({removeDialogOpen: false});
+        return false;
+    };
 
+    onDelete = () => {
+        this.props.removeChapter(this.props.chapter);
+        this.setState({onSubmit: true})
+    };
 
     render() {
         const {classes, chapter} = this.props;
@@ -52,12 +83,6 @@ class Chapter extends React.Component {
             <React.Fragment>
                 <Card className={classes.root}>
                     <CardActionArea>
-                        <CardMedia
-                            component="iframe"
-                            height="140"
-                            src={chapter.chapterPreviewLink}
-                            title={chapter.chapterName}
-                        />
                         <CardContent>
 
                             <Typography gutterBottom variant="h5" component="h2">
@@ -76,37 +101,89 @@ class Chapter extends React.Component {
                         <Button size="small" color="primary" onClick={() => this.onEdit(chapter)}>
                             Edit
                         </Button>
-                        <Button size="small" color="primary">
+                        <Button size="small" color="primary" onClick={() => this.onRemove(chapter)}>
                             Remove
                         </Button>
                     </CardActions>
                 </Card>
 
-                <Dialog fullScreen  open={this.state.editDialogOpen} onClose={this.handleEditDialogClose} aria-labelledby="form-dialog-title">
+                <Dialog fullScreen open={this.state.editDialogOpen} onClose={this.handleEditDialogClose}
+                        aria-labelledby="form-dialog-title">
                     <AppBar className={classes.appBar}>
                         <Toolbar>
-                            <IconButton edge="start" color="inherit" onClick={this.handleEditDialogClose} aria-label="close">
-                                <CloseIcon />
+                            <IconButton edge="start" color="inherit" onClick={this.handleEditDialogClose}
+                                        aria-label="close">
+                                <CloseIcon/>
                             </IconButton>
                             <Typography variant="h6" className={classes.title}>
-                                Chapter Details
+                                Chapter Details Edit
                             </Typography>
-                            <Button autoFocus color="inherit" onClick={this.handleEditDialogClose}>
-                                Save Changes
-                            </Button>
                         </Toolbar>
                     </AppBar>
-                    <DialogTitle id="form-dialog-title">Edit Chapter Details</DialogTitle>
-                    <DialogContent>
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="name"
-                            label="Email Address"
-                            type="email"
-                            fullWidth
-                        />
+                    <DialogContent style={{backgroundColor: '#303030'}}>
+                        <ChapterEditDialog chapter={this.state.chapter} type={'edit'}/>
                     </DialogContent>
+                </Dialog>
+
+                <Dialog
+                    open={this.state.removeDialogOpen}
+                    onClose={this.handleRemoveDialogClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{this.props.chapterRemoveResponse.msgHeader}</DialogTitle>
+                    <DialogContent>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={10}>
+                                <TextField
+                                    variant="outlined"
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
+                                    id="chapterName"
+                                    name="chapterName"
+                                    label="Chapter name"
+                                    value={this.props.chapter.chapterName}
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={2}>
+                                <TextField
+                                    variant="outlined"
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
+                                    id="cost"
+                                    name="cost"
+                                    label="Cost"
+                                    value={this.props.chapter.chapterCost}
+                                />
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                        {(!this.state.onSubmit) ?
+
+                            <React.Fragment>
+                                <Button onClick={this.handleRemoveDialogClose} color="primary">
+                                    Cancel
+                                </Button>
+                                <Button onClick={this.onDelete} color="primary" autoFocus>
+                                    Delete
+                                </Button>
+                            </React.Fragment>
+                        :
+
+                            <React.Fragment>
+                                <Button onClick={this.handleRemoveDialogClose} color="primary">
+                                    Close
+                                </Button>
+                            </React.Fragment>
+                        }
+                    </DialogActions>
+                    <Backdrop open={this.props.loadingChapterRemove} style={{zIndex: 1, color: '#fff'}}>
+                        <CircularProgress color="inherit"/>
+                    </Backdrop>
                 </Dialog>
             </React.Fragment>
         )
@@ -115,11 +192,16 @@ class Chapter extends React.Component {
 
 const mapStateToProps = (appState) => {
     return {
-        loadingChapters: appState.loadingChapters
+        loadingChapters: appState.loadingChapters,
+        loadingChapterRemove: appState.loadingChapterRemove,
+        chapterRemoveResponse: appState.chapterRemoveResponse
     }
 };
 
-const matchDispatchToProps = {};
+const matchDispatchToProps = {
+    fetchChapters: fetchChapters,
+    removeChapter: removeChapter
+};
 
 Chapter.propTypes = {
     classes: PropTypes.object.isRequired,

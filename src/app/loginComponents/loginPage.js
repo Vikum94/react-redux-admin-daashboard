@@ -1,71 +1,22 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {login} from "../../store/actions/actionCreators";
-import Logo from './../../css/img/page-logo.png';
-
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
-import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
+import {Typography, Avatar, Button, CssBaseline, TextField, Link, Paper, Box, Grid, CircularProgress, Backdrop} from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Backdrop from "@material-ui/core/Backdrop";
 import Alert from "@material-ui/lab/Alert";
 import {ValidatorForm} from 'react-material-ui-form-validator';
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        height: '100vh',
-    },
-    image: {
-        backgroundImage: `url(${Logo})`,
-        backgroundRepeat: 'no-repeat',
-        backgroundColor:
-            theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-    },
-    paper: {
-        margin: theme.spacing(8, 4),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1),
-    },
-    submit: {
-        margin: theme.spacing(3, 0, 2),
-    },
-    backdrop: {
-        zIndex: 1,
-        color: '#fff',
-    },
-    alertRoot: {
-        width: '100%'
-    }
-}));
+import {login} from "../../store/actions/actionCreators";
+import useStyles from '../../css/loginPageStyles'
 
 export default function SignInSide() {
     const classes = useStyles();
 
     const [email, emailChangeHandler] = useState('');
     const [password, passwordChangeHandler] = useState('');
-    const [isSubmit, onSubmit] = useState(false);
 
     const loadingLogin = useSelector((state) => {return state.loadingLogin});
     const errorDetails = useSelector((state) => {return state.loginErrorDetail});
+    const isValidUser = useSelector((state) => {return state.isValidUser});
 
     const dispatch = useDispatch();
 
@@ -86,16 +37,13 @@ export default function SignInSide() {
                             {errorDetails.msg}
                         </Alert>
                     </div>
-                    <ValidatorForm onSubmit={() => onSubmit(() => {
-                        dispatch(login(email, password));
-                        return true;
-                    })} className={classes.form}>
+                    <ValidatorForm onSubmit={() => {dispatch(login(email, password))}} className={classes.form}>
                         <TextField
                             variant="outlined"
                             margin="normal"
                             required
                             fullWidth
-                            id="email"
+                            _id="email"
                             label="Email Address"
                             name="email"
                             autoComplete="email"
@@ -111,7 +59,7 @@ export default function SignInSide() {
                             name="password"
                             label="Password"
                             type="password"
-                            id="password"
+                            _id="password"
                             autoComplete="current-password"
                             value={password}
                             onChange={event => passwordChangeHandler(event.target.value)}
@@ -122,7 +70,7 @@ export default function SignInSide() {
                             fullWidth
                             variant="contained"
                             className={classes.submit}
-                            disabled={isSubmit}
+                            disabled={isValidUser}
                         >
                             Sign In
                         </Button>

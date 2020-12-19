@@ -40,6 +40,7 @@ export const getChapterComposer = (text) => {
             const array = [];
             _.forEach(lessonArr, function (o) {
                 let obj = {
+                    _id: o._id,
                     number: o.number,
                     name: o.name,
                     description: o.description,
@@ -56,17 +57,15 @@ export const getChapterComposer = (text) => {
 
         _.forEach(JSON.parse(res), (o) => {
             let obj = {
-                id: o._id,
+                _id: o._id,
                 chapterNumber: o.chapterNumber,
                 chapterName: o.chapterName,
                 chapterCost: o.chapterCost,
                 chapterDescription: o.chapterDescription,
-                chapterPreviewLink: "https://www.youtube.com/embed/" + o.chapterPreviewLink.split('.be/')[1],
                 lessons: composeLessons(o.lessons)
             };
             chapters.push(obj);
         });
-
         return Promise.resolve(chapters);
     });
 };
@@ -98,6 +97,30 @@ export const getUserComposer = (text) => {
 };
 
 export const updateCreditComposer = (text) => {
+    return text.text().then(res => {
+        if (!text.ok) {
+            if (text.status === 400) {
+                return Promise.reject(res);
+            }
+            return Promise.reject(res);
+        }
+        return Promise.resolve(JSON.parse(res));
+    });
+};
+
+export const updateChapterComposer = (text) => {
+    return text.text().then(res => {
+        if (!text.ok) {
+            if (text.status === 400) {
+                return Promise.reject(res);
+            }
+            return Promise.reject(res);
+        }
+        return Promise.resolve(JSON.parse(res));
+    });
+};
+
+export const removeChapterComposer = (text) => {
     return text.text().then(res => {
         if (!text.ok) {
             if (text.status === 400) {

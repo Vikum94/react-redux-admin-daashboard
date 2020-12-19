@@ -1,26 +1,13 @@
 import React from 'react';
 import {connect} from "react-redux";
 import MaterialTable from "material-table";
-import Search from '@material-ui/icons/Search';
-import Clear from '@material-ui/icons/Clear';
-import ChevronLeft from '@material-ui/icons/ChevronLeft'
-import ChevronRight from '@material-ui/icons/ChevronRight'
-import FirstPage from '@material-ui/icons/FirstPage'
-import LastPage from '@material-ui/icons/LastPage'
+import {Search, Clear, ChevronLeft, ChevronRight, FirstPage, LastPage} from '@material-ui/icons';
+import {withStyles, TextField, Button, DialogActions, DialogContent, DialogTitle, Dialog, DialogContentText, InputAdornment, CircularProgress, Backdrop} from "@material-ui/core";
 import * as PropTypes from "prop-types";
+
 import {styles} from './../../css/userStyles';
-import withStyles from "@material-ui/core/styles/withStyles";
 import {fetchUsers, updateCredits} from './../../store/actions/actionCreators'
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Dialog from "@material-ui/core/Dialog";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Backdrop from "@material-ui/core/Backdrop";
+
 
 
 class Users extends React.Component {
@@ -67,7 +54,7 @@ class Users extends React.Component {
     };
 
     render() {
-        const {users, loading, loadingChapterUpdate} = this.props;
+        const {users, loading, loadingCreditUpdate} = this.props;
         return (
             <React.Fragment>
                 <MaterialTable
@@ -140,7 +127,7 @@ class Users extends React.Component {
                         </DialogActions>
                     </Dialog>
                 </div>
-                <Backdrop open={loading || loadingChapterUpdate} style={{zIndex: 1, color: '#fff'}}>
+                <Backdrop open={loading || loadingCreditUpdate} style={{zIndex: 1, color: '#fff'}}>
                     <CircularProgress color="inherit"/>
                 </Backdrop>
             </React.Fragment>
@@ -152,7 +139,7 @@ const mapStateToProps = (appState) => {
     return {
         loading: appState.loadingUsers,
         users: appState.users,
-        loadingChapterUpdate: appState.loadingChapterUpdate
+        loadingCreditUpdate: appState.loadingCreditUpdate
     }
 };
 
