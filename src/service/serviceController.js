@@ -18,11 +18,11 @@ export const loginResponseController = (text) => {
         }
         let data = JSON.parse(res);
         console.log(data);
-//         if(data.userType !== 'admin'){
-//             return Promise.reject("Access Denied. Account you entered does not have Admin access.");
-//         }else{
+        if(data.userType !== 'admin'){
+            return Promise.reject("Access Denied. Account you entered does not have Admin access.");
+        }else{
             return Promise.resolve(data);
-//         }
+        }
     });
 };
 
