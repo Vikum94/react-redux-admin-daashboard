@@ -1,1 +1,1 @@
-export const SERVICE_ROOT = (process.env.NODE_ENV === "production") ? process.env.SERVICE_URL :'http://localhost:5000/api/';
+export const SERVICE_ROOT = 'https://sithumina-synergy-prod.herokuapp.com/api/';
